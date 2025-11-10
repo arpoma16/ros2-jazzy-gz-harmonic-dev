@@ -12,6 +12,8 @@ RUN apt install -y ros-jazzy-zed-msgs
 RUN apt install -y ros-jazzy-moveit-py
 RUN apt install -y python3-paho-mqtt
 RUN apt install -y ros-jazzy-nav2-common
+RUN apt install -y ros-jazzy-nav2-bringup
+RUN apt install -y ros-jazzy-nav2-route
 RUN apt install -y ros-jazzy-robot-localization
 RUN apt install -y ros-jazzy-moveit-py
 RUN apt install -y ros-jazzy-moveit-configs-utils
@@ -19,7 +21,6 @@ RUN apt install -y ros-jazzy-moveit-ros-move-group
 RUN apt install -y ros-jazzy-moveit-kinematics
 RUN apt install -y ros-jazzy-moveit-planners
 RUN apt install -y ros-jazzy-moveit-simple-controller-manager
-RUN apt install -y ros-jazzy-nav2-common
 RUN apt install -y ros-jazzy-moveit-msgs
 RUN apt install -y ros-jazzy-moveit-ros-planning
 RUN apt install -y ros-jazzy-moveit-ros-planning-interface

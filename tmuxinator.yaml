@@ -13,6 +13,7 @@ windows:
             - colcon build --packages-select indra
             - source /opt/ros/jazzy/setup.bash
             - source install/setup.bash
+            - echo $GZ_SIM_RESOURCE_PATH
             - gz sim /ariac_ws/src/indra/worlds/factory.sdf --verbose
         - bridge:
             - devcontainerhere
