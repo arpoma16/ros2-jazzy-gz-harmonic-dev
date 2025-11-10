@@ -1,0 +1,23 @@
+name: indra_sim
+root: .
+on_project_exit: tmux kill-window
+
+windows:
+  - GCS:
+      layout: tiled
+      panes:
+        - main:
+            - devcontainerhere
+            - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/root/.gazebo/models
+            - cd .. 
+            - colcon build --packages-select indra
+            - source /opt/ros/jazzy/setup.bash
+            - source install/setup.bash
+            - gz sim /ariac_ws/src/indra/worlds/factory.sdf --verbose
+        - bridge:
+            - devcontainerhere
+            - ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+        - rostest:
+            - devcontainerhere
+        - rostest2:
+            - echo "Waiting for rostest to complete..."

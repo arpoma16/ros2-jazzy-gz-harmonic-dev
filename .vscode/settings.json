@@ -1,0 +1,33 @@
+{
+        "files.associations": {
+        "*.launch": "xml",
+        "*.launch.xml": "xml",
+        "*.test": "xml",
+        "*.urdf.xacro": "xml",
+        "*.urdf": "xml",
+        "model.config": "xml",
+        "*.sdf": "xml",
+        "*.world": "xml"
+    },
+    "python.autoComplete.extraPaths": [
+        "/ariac_ws/build/ariac_setup",
+        "/ariac_ws/install/ariac_setup/lib/python3.12/site-packages",
+        "/ariac_ws/build/ariac_app",
+        "/ariac_ws/install/ariac_app/lib/python3.12/site-packages",
+        "/ariac_ws/install/ariac_interfaces/lib/python3.12/site-packages",
+        "/ariac_ws/build/ariac_db",
+        "/ariac_ws/install/ariac_db/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/ariac_ws/build/ariac_setup",
+        "/ariac_ws/install/ariac_setup/lib/python3.12/site-packages",
+        "/ariac_ws/build/ariac_app",
+        "/ariac_ws/install/ariac_app/lib/python3.12/site-packages",
+        "/ariac_ws/install/ariac_interfaces/lib/python3.12/site-packages",
+        "/ariac_ws/build/ariac_db",
+        "/ariac_ws/install/ariac_db/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true
+}

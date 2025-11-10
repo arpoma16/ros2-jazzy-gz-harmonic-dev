@@ -1,0 +1,1 @@
+docker build  -t grvc/indra:latest  .

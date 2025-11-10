@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/ariac_ws/install/robotiq_gripper_controller/include/**",
+        "/ariac_ws/install/ariac_plugins/include/**",
+        "/ariac_ws/install/ariac_interfaces/include/**",
+        "/opt/ros/jazzy/include/**",
+        "/ariac_ws/src/ARIAC-AP/ariac_plugins/include/**",
+        "/ariac_ws/src/ARIAC-AP/robotiq_gripper_controller/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

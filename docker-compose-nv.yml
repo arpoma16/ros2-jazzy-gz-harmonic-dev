@@ -1,0 +1,84 @@
+services:
+  indra_dev:
+    image: grvc/indra:latest
+    container_name: indra_dev_container
+    runtime: nvidia
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+      - "8000:8000"   # API HTTP
+      - "8006:8006"   # WebSocket trajectories
+      - "8083:8083"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./:/ariac_ws/src/
+      - ${XAUTHORITY}:${XAUTHORITY}
+      - ./fastdds.xml:/tmp/fastdds.xml:ro  # ← Añade esto
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}
+      - __NV_PRIME_RENDER_OFFLOAD=1
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia
+      - XAUTHORITY=${XAUTHORITY}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+      # CRÍTICO: Configuración para DDS en Docker
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/tmp/fastdds.xml
+    stdin_open: true
+    tty: true
+    networks:
+      rmf_net:
+        ipv4_address: 172.25.0.10
+
+  # rmf_api_server:
+  #   image: ghcr.io/open-rmf/rmf-web/api-server:jazzy
+  #   container_name: rmf_api_server
+  #   volumes:
+  #     - ./fastdds.xml:/tmp/fastdds.xml:ro  # ← Añade esto
+  #   ports:
+  #     - "8000:8000"   # API HTTP
+  #     - "8006:8006"   # WebSocket trajectories
+  #   environment:
+  #     - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+  #     - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+  #     # CRÍTICO: Configuración para DDS en Docker
+  #     - ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
+  #     - FASTRTPS_DEFAULT_PROFILES_FILE=/tmp/fastdds.xml
+  #     # Configuración adicional para el API server
+  #     - RMF_API_SERVER_HOST=0.0.0.0  # ← AÑADE ESTO (escucha en todas las interfaces)
+  #     - RMF_API_SERVER_PORT=8000
+  #     - TRAJECTORY_SERVER_PORT=8006
+  #   stdin_open: true
+  #   tty: true
+  #   restart: "no"
+  #   networks:
+  #     rmf_net:
+  #       ipv4_address: 172.25.0.11
+
+  # rmf_demo_dashboard:
+  #   image: ghcr.io/open-rmf/rmf-web/demo-dashboard:jazzy-nightly
+  #   container_name: rmf_demo_dashboard
+  #   ports:
+  #     - "3000:3000"   # Dashboard web
+  #   environment:
+  #     - RMF_SERVER_URL=http://localhost:8000
+  #     - TRAJECTORY_SERVER_URL=ws://localhost:8006
+  #   depends_on:
+  #     - rmf_api_server
+  #   stdin_open: true
+  #   tty: true
+  #   restart: "no"
+  #   networks:
+  #     rmf_net:
+  #       ipv4_address: 172.25.0.12
+
+networks:
+  rmf_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
