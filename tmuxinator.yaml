@@ -1,9 +1,10 @@
 name: indra_sim
 root: .
-on_project_exit: tmux kill-window
+on_project_start: devcontainerup || devcontainer up --workspace-folder .
+on_project_exit: docker stop indra_dev_container && tmux kill-window -t indra_sim 
 
 windows:
-  - GCS:
+  - main:
       layout: tiled
       panes:
         - main:
@@ -11,14 +12,34 @@ windows:
             - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/root/.gazebo/models
             - cd .. 
             - colcon build --packages-select indra
-            - source /opt/ros/jazzy/setup.bash
-            - source install/setup.bash
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - echo $GZ_SIM_RESOURCE_PATH
-            - gz sim /ariac_ws/src/indra/worlds/factory.sdf --verbose
+            - rm -rf install/indra build/indra  install/bcr_bot build/bcr_bot && colcon build --packages-select indra bcr_bot && gz sim /ariac_ws/src/indra/worlds/factory.world --verbose
         - bridge:
             - devcontainerhere
+            - source /opt/ros/jazzy/setup.zsh && source install/setup.zsh
             - ros2 launch rosbridge_server rosbridge_websocket_launch.xml
         - rostest:
             - devcontainerhere
+            - sleep 20
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - ros2 launch indra indra.launch.py
         - rostest2:
+            - devcontainerhere
             - echo "Waiting for rostest to complete..."
+            - sleep 30
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - ros2 launch bcr_bot nav2.launch.py
+  - main:
+      layout: tiled
+      panes:
+        - uno:
+            - devcontainerhere
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - ros2 run indra ObjectManager.py
+        - two:
+            - devcontainerhere
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/actor/cmd_vel
+
+

@@ -1,7 +1,11 @@
 FROM nistariac/ariac2025:latest
 RUN apt update
 RUN apt install -y ros-jazzy-rmf-dev
-RUN apt install -y ros-jazzy-rosbridge-server
+RUN apt install -y ros-jazzy-rosbridge-suite
+RUN apt install -y ros-jazzy-ament-cmake-mypy
+RUN apt install -y python3-tornado
+RUN apt install -y python3-bson
+RUN apt install -y python3-cbor2
 RUN apt install -y ros-jazzy-gz-ros2-control ros-jazzy-gz-ros2-control-demos
 RUN apt install -y ros-jazzy-dynamixel-sdk
 RUN apt install -y ros-jazzy-dynamixel-interfaces
@@ -41,6 +45,7 @@ RUN apt install -y ros-jazzy-robotiq-description
 RUN apt install -y ros-jazzy-zed-msgs
 RUN apt install -y ros-jazzy-moveit-setup-assistant
 RUN apt install -y ros-jazzy-gazebo-msgs
+RUN apt install -y ros-jazzy-stereo-image-proc
 RUN apt install -y python3-fastapi
 RUN apt install -y python3-pydantic
 RUN apt install -y python3-uvicorn
@@ -49,8 +54,9 @@ RUN apt install -y python3-uvicorn
 # RUN apt install -y curl wget
 # RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 # RUN apt install -y nodejs
-
+#RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+SHELL ["/bin/bash", "-c"]
 RUN curl -fsSL https://get.pnpm.io/install.sh | bash -
-RUN export PATH="/root/.local/share/pnpm:$PATH" && pnpm env use --global lts
+RUN source ./.bashrc && export PATH="/root/.local/share/pnpm:$PATH" && pnpm env use --global lts
 RUN echo 'export PATH="/root/.local/share/pnpm:$PATH"' >> ~/.bashrc
 RUN apt install -y python3-pip python3-venv

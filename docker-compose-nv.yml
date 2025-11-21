@@ -9,6 +9,7 @@ services:
       - "8000:8000"   # API HTTP
       - "8006:8006"   # WebSocket trajectories
       - "8083:8083"
+      - "5173:5173"
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./:/ariac_ws/src/

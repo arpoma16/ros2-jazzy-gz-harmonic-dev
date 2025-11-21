@@ -3,9 +3,10 @@ apt update
 
 rosdep update
 cd /ariac_ws/
+rm -rf build/ install/
 export PIP_BREAK_SYSTEM_PACKAGES=1
 rosdep install --from-paths src --ignore-src -r -y | grep "apt-get install" | sed 's/.*apt-get install //' > /tmp/ros_dependencies.txt
-
+colcon build --symlink-install
 #######
 # Config ZSH
 #######
