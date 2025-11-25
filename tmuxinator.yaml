@@ -11,7 +11,7 @@ windows:
             - devcontainerhere
             - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/root/.gazebo/models
             - cd .. 
-            - colcon build --packages-select indra
+            - colcon build --packages-select indra --symlink-install
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - echo $GZ_SIM_RESOURCE_PATH
             - rm -rf install/indra build/indra  install/bcr_bot build/bcr_bot && colcon build --packages-select indra bcr_bot && gz sim /ariac_ws/src/indra/worlds/factory.world --verbose
