@@ -49,6 +49,9 @@ RUN apt install -y ros-jazzy-stereo-image-proc
 RUN apt install -y python3-fastapi
 RUN apt install -y python3-pydantic
 RUN apt install -y python3-uvicorn
+RUN apt install -y ros-jazzy-rqt-tf-tree
+RUN apt install -y ros-jazzy-topic-tools
+
 
 
 # RUN apt install -y curl wget

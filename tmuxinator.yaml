@@ -14,7 +14,7 @@ windows:
             - colcon build --packages-select indra --symlink-install
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - echo $GZ_SIM_RESOURCE_PATH
-            - rm -rf install/indra build/indra  install/bcr_bot build/bcr_bot && colcon build --packages-select indra bcr_bot && gz sim /ariac_ws/src/indra/worlds/factory.world --verbose
+            - rm -rf install/indra build/indra  install/bcr_bot build/bcr_bot && colcon build --packages-select indra bcr_bot --symlink-install
         - bridge:
             - devcontainerhere
             - source /opt/ros/jazzy/setup.zsh && source install/setup.zsh
@@ -29,7 +29,7 @@ windows:
             - echo "Waiting for rostest to complete..."
             - sleep 30
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
-            - ros2 launch bcr_bot nav2.launch.py
+            - ros2 launch bcr_bot nav2_factory.launch.py
   - main:
       layout: tiled
       panes:
