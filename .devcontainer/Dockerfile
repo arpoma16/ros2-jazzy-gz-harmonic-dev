@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-robot-localization \
     ros-jazzy-laser-filters \
     ros-jazzy-gazebo-msgs \
+    ros-jazzy-image-proc \
     ros-jazzy-stereo-image-proc \
     ros-jazzy-rqt-tf-tree \
     ros-jazzy-topic-tools \
@@ -49,12 +50,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 
-# RUN apt install -y curl wget
-# RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-# RUN apt install -y nodejs
-#RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
-SHELL ["/bin/bash", "-c"]
-RUN curl -fsSL https://get.pnpm.io/install.sh | bash -
-RUN source ./.bashrc && export PATH="/root/.local/share/pnpm:$PATH" && pnpm env use --global lts
-RUN echo 'export PATH="/root/.local/share/pnpm:$PATH"' >> ~/.bashrc
-RUN apt install -y python3-pip python3-venv
+# Node LTS (NodeSource) + pnpm
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && npm install -g pnpm \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Rust toolchain + colcon plugins, needed to build the Cargo packages (rclrs, rmf_site_map_server)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN pip3 install --no-cache-dir --break-system-packages \
+    colcon-cargo==0.2.0 \
+    colcon-ros-cargo==0.2.0 \
+    cargo-ament-build==0.1.11
