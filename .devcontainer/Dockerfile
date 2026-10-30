@@ -1,56 +1,51 @@
 FROM nistariac/ariac2025:latest
-RUN apt update
-RUN apt install -y ros-jazzy-rmf-dev
-RUN apt install -y ros-jazzy-rosbridge-suite
-RUN apt install -y ros-jazzy-ament-cmake-mypy
-RUN apt install -y python3-tornado
-RUN apt install -y python3-bson
-RUN apt install -y python3-cbor2
-RUN apt install -y ros-jazzy-gz-ros2-control ros-jazzy-gz-ros2-control-demos
-RUN apt install -y ros-jazzy-dynamixel-sdk
-RUN apt install -y ros-jazzy-dynamixel-interfaces
-RUN apt install -y ros-jazzy-depthai-descriptions
-RUN apt install -y ros-jazzy-realsense2-description
-RUN apt install -y ros-jazzy-robotiq-description
-RUN apt install -y ros-jazzy-zed-msgs
-RUN apt install -y ros-jazzy-moveit-py
-RUN apt install -y python3-paho-mqtt
-RUN apt install -y ros-jazzy-nav2-common
-RUN apt install -y ros-jazzy-nav2-bringup
-RUN apt install -y ros-jazzy-nav2-route
-RUN apt install -y ros-jazzy-robot-localization
-RUN apt install -y ros-jazzy-moveit-py
-RUN apt install -y ros-jazzy-moveit-configs-utils
-RUN apt install -y ros-jazzy-moveit-ros-move-group
-RUN apt install -y ros-jazzy-moveit-kinematics
-RUN apt install -y ros-jazzy-moveit-planners
-RUN apt install -y ros-jazzy-moveit-simple-controller-manager
-RUN apt install -y ros-jazzy-moveit-msgs
-RUN apt install -y ros-jazzy-moveit-ros-planning
-RUN apt install -y ros-jazzy-moveit-ros-planning-interface
-RUN apt install -y ros-jazzy-moveit-servo
-RUN apt install -y python3-paho-mqtt
-RUN apt install -y python3-flask-socketio
-RUN apt install -y ros-jazzy-laser-filters
-RUN apt install -y python3-libgpiod
-RUN apt install -y python3-pyudev
-RUN apt install -y python3-serial
-RUN apt install -y python3-sh
-RUN apt install -y usbutils
-RUN apt install -y ros-jazzy-dynamixel-sdk
-RUN apt install -y ros-jazzy-dynamixel-interfaces
-RUN apt install -y ros-jazzy-depthai-descriptions
-RUN apt install -y ros-jazzy-realsense2-description
-RUN apt install -y ros-jazzy-robotiq-description
-RUN apt install -y ros-jazzy-zed-msgs
-RUN apt install -y ros-jazzy-moveit-setup-assistant
-RUN apt install -y ros-jazzy-gazebo-msgs
-RUN apt install -y ros-jazzy-stereo-image-proc
-RUN apt install -y python3-fastapi
-RUN apt install -y python3-pydantic
-RUN apt install -y python3-uvicorn
-RUN apt install -y ros-jazzy-rqt-tf-tree
-RUN apt install -y ros-jazzy-topic-tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-jazzy-rmf-dev \
+    ros-jazzy-rosbridge-suite \
+    ros-jazzy-ament-cmake-mypy \
+    python3-tornado \
+    python3-bson \
+    python3-cbor2 \
+    ros-jazzy-gz-ros2-control \
+    ros-jazzy-gz-ros2-control-demos \
+    ros-jazzy-dynamixel-sdk \
+    ros-jazzy-dynamixel-interfaces \
+    ros-jazzy-depthai-descriptions \
+    ros-jazzy-realsense2-description \
+    ros-jazzy-robotiq-description \
+    ros-jazzy-zed-msgs \
+    ros-jazzy-moveit-py \
+    ros-jazzy-moveit-configs-utils \
+    ros-jazzy-moveit-ros-move-group \
+    ros-jazzy-moveit-kinematics \
+    ros-jazzy-moveit-planners \
+    ros-jazzy-moveit-simple-controller-manager \
+    ros-jazzy-moveit-msgs \
+    ros-jazzy-moveit-ros-planning \
+    ros-jazzy-moveit-ros-planning-interface \
+    ros-jazzy-moveit-servo \
+    ros-jazzy-moveit-setup-assistant \
+    ros-jazzy-nav2-common \
+    ros-jazzy-nav2-bringup \
+    ros-jazzy-nav2-route \
+    ros-jazzy-robot-localization \
+    ros-jazzy-laser-filters \
+    ros-jazzy-gazebo-msgs \
+    ros-jazzy-stereo-image-proc \
+    ros-jazzy-rqt-tf-tree \
+    ros-jazzy-topic-tools \
+    python3-paho-mqtt \
+    python3-flask-socketio \
+    python3-flask-cors \
+    python3-fastapi \
+    python3-pydantic \
+    python3-uvicorn \
+    python3-libgpiod \
+    python3-pyudev \
+    python3-serial \
+    python3-sh \
+    usbutils \
+    && rm -rf /var/lib/apt/lists/*
 
 
 

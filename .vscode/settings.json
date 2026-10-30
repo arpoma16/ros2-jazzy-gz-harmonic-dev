@@ -30,5 +30,6 @@
         "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "cmake.sourceDirectory": "/home/grvc/work/Indra/bcr_bot"
+    "cmake.sourceDirectory": "/home/grvc/work/Indra/bcr_bot",
+    "ROS2.distro": "jazzy"
 }

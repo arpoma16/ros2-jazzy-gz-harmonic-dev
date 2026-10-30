@@ -18,7 +18,15 @@
         "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
             "plugins": "zsh-autosuggestions zsh-syntax-highlighting",
             "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git https://github.com/zsh-users/zsh-syntax-highlighting.git"
-        }
+        },
+        "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+    },
+    "mounts": [
+        "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+    ],
+    "containerEnv": {
+        "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+        "CLAUDE_CODE_OAUTH_TOKEN": "${localEnv:CLAUDE_CODE_OAUTH_TOKEN}"
     },
     "customizations": {
         "vscode": {
@@ -35,7 +43,8 @@
                 "tamasfe.even-better-toml",
                 "timonwong.shellcheck",
                 "streetsidesoftware.code-spell-checker",
-                "yzhang.markdown-all-in-one"
+                "yzhang.markdown-all-in-one",
+                "Anthropic.claude-codejskdjf"
             ],
             "settings": {
                 "editor.tabSize": 4,
