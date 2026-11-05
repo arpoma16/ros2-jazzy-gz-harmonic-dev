@@ -66,3 +66,7 @@ RUN pip3 install --no-cache-dir --break-system-packages \
     colcon-cargo==0.2.0 \
     colcon-ros-cargo==0.2.0 \
     cargo-ament-build==0.1.11
+
+# The rmf-web api-server does NOT use the system Python: it runs from the pipenv venv in the
+# mounted workspace (rmf-web/.venv, `pipenv sync -d` from rmf-web/Pipfile.lock), which survives
+# recreating the container. See indra/docs/RMF.md §11.
