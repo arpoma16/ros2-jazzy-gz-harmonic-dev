@@ -1,0 +1,16 @@
+# colcon workspace output
+build/
+install/
+log/
+
+# runtime / generated files (CLAUDE.md "Ruido que ignorar")
+core
+.pnpm-store/
+frames_*.gv
+frames_*.pdf
+web_server.log
+log.css
+~~
+RMF_Materials.zip
+.rmf_schedule_node.yaml
+.vscode/browse.vc.db*
