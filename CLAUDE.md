@@ -18,8 +18,8 @@ Simulación en Gazebo + RMF (open-rmf) + Nav2, con rosbridge para la HMI web.
 | `bcr_bot/` | `arpoma16/bcr_bot` (fork, rama `ros2`) | Robot AGV (descripción, Nav2, `nav2_factory.launch.py`) |
 | `ariac_ap/` | `arpoma16/ARIAC` (rama `ariac2025`) | Workspace/mundo base ARIAC (`ariac_gz`, `/ariac_ws`) |
 | `hmi_agv/` | sin git (hay `hmi_agv.tar.xz`) | HMI Qt (C++). Candidato a repo propio |
-| `indra_fleet_adapter/` | `arpoma16/indra_fleet_adapter` (privado, rama `main`) | Fleet adapter + fleet manager Open-RMF ↔ Nav2 de `bcr_bot`. Ver su `README.md` e `indra/docs/RMF_ADAPTER_DESIGN.md` |
-| `rmf-web/` | `mine` = `arpoma16/rmf-web` (fork, rama `jazzy`); `origin` = `open-rmf/rmf-web` | API server + dashboard de RMF. Fork al día con upstream `jazzy` + fixes de `gateway.py`/`app.py` y config `0.0.0.0`. Actualizar con `git fetch origin && git merge origin/jazzy`; push a `mine` (no a `origin`, no mandar PRs sin pedirlo). El api-server corre con `rmf-web/.venv/bin/python` (`pipenv sync -d`, nunca `pipenv install`); Node con pnpm 12. Receta: `indra/docs/RMF.md` §11 |
+| `indra_fleet_adapter/` | `arpoma16/indra_fleet_adapter` (privado, rama `main`) | Fleet adapter + fleet manager Open-RMF ↔ Nav2 de `bcr_bot`. Ver su `README.md` y `docs/RMF_ADAPTER_DESIGN.md` |
+| `rmf-web/` | `mine` = `arpoma16/rmf-web` (fork, rama `jazzy`); `origin` = `open-rmf/rmf-web` | API server + dashboard de RMF. Fork al día con upstream `jazzy` + fixes de `gateway.py`/`app.py` y config `0.0.0.0`. Actualizar con `git fetch origin && git merge origin/jazzy`; push a `mine` (no a `origin`, no mandar PRs sin pedirlo). El api-server corre con `rmf-web/.venv/bin/python` (`pipenv sync -d`, nunca `pipenv install`); Node con pnpm 12. Receta: `rmf-web/docs/indra/environment.md` |
 
 ## Paquetes de terceros / referencia / pruebas (NO hacerles seguimiento)
 
@@ -90,7 +90,7 @@ Levantar/parar el contenedor y matar procesos es decisión del usuario: pedir pe
 - **Diagnóstico rápido:** `ros2 node list` (nodos duplicados = restos de otra sesión), `ros2 topic list -t`, `ros2 action list -t`.
 - **DDS:** `ROS_DOMAIN_ID=0`, `rmw_fastrtps_cpp`, `fastdds.xml` con peers `172.25.0.10/11` (red `rmf_net`).
 - **Logs de una sesión del agente:** `/tmp/*.log` dentro del contenedor (no persisten si se recrea).
-- **Resultados verificados de pruebas** (qué arrancó y qué no): `indra/docs/RMF.md › Verificado en ejecución`.
+- **Resultados verificados de pruebas** (qué arrancó y qué no): `lince_manager/fase3/implementacion.md` §2.1.
 
 ## Dependencia del proyecto ARIAC
 
