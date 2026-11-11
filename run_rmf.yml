@@ -8,6 +8,7 @@ on_project_exit: docker stop indra_dev_container
 # rmf-web api-server (:8000, from rmf-web/.venv) + dashboard (:5173), TinyRobot fleet adapter
 # and one bcr_bot with Nav2 (namespace bcr_bot, not driven by RMF yet).
 # Dashboard: http://localhost:5173   API: http://localhost:8000/docs   rosbridge: ws://localhost:9090
+# Camera: web_video_server on http://localhost:8080 (stream?topic=/bcr_bot_N/front_camera/image_raw)
 # No build here: build first with
 #   colcon build --packages-up-to indra bcr_bot --symlink-install --continue-on-error
 
@@ -26,6 +27,12 @@ windows:
             - unset HISTFILE
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+        - video:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            # MJPEG: http://localhost:8080/stream?topic=/bcr_bot_1/front_camera/image_raw&width=640&height=480
+            - ros2 run web_video_server web_video_server
         - objects:
             - devcontainerhere
             - unset HISTFILE
