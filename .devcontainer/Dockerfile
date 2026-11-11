@@ -2,6 +2,7 @@ FROM nistariac/ariac2025:latest
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-rmf-dev \
     ros-jazzy-rosbridge-suite \
+    ros-jazzy-web-video-server \
     ros-jazzy-ament-cmake-mypy \
     python3-tornado \
     python3-bson \
