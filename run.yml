@@ -16,11 +16,6 @@ windows:
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - echo $GZ_SIM_RESOURCE_PATH
             - rm -rf install/indra build/indra  install/bcr_bot build/bcr_bot && colcon build --packages-select indra bcr_bot --symlink-install
-        - bridge:
-            - devcontainerhere
-            - unset HISTFILE
-            - source /opt/ros/jazzy/setup.zsh && source install/setup.zsh
-            - ros2 launch rosbridge_server rosbridge_websocket_launch.xml
         - video:
             - devcontainerhere
             - unset HISTFILE
@@ -47,7 +42,7 @@ windows:
             - devcontainerhere
             - unset HISTFILE
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
-            - ros2 run indra ObjectManager.py
+            - ros2 run indra ObjectManager.py --ros-args -p robot_names:="[bcr_bot]"
         - two:
             - devcontainerhere
             - unset HISTFILE

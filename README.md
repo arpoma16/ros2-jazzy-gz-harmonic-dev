@@ -1,7 +1,7 @@
 # ros2-jazzy-gz-harmonic-dev
 
 Workspace colcon "contenedor" del proyecto **Indra**: un AGV que transporta piezas en una fábrica de satélites, simulado con
-ROS 2 Jazzy + Gazebo Harmonic, Open-RMF y Nav2, con rosbridge para la HMI web y el chat LLM.
+ROS 2 Jazzy + Gazebo Harmonic, Open-RMF y Nav2. El chat LLM entra por el MCP (`indra_agv_mcp`) y el api-server de RMF; rosbridge ya no se lanza.
 
 Este repo solo mantiene el **entorno**: devcontainer, `docker-compose-nv.yml`, `fastdds.xml`, los `run*.yml` de tmuxinator
 y las instrucciones para agentes (`CLAUDE.md`). El código vive en repos independientes, en subcarpetas con su propio `.git`

@@ -8,7 +8,7 @@ en repos independientes dentro de las subcarpetas (cada una con su propio `.git`
 ## Proyecto
 
 AGV (robot móvil) que transporta piezas en una fábrica de satélites (Indra).
-Simulación en Gazebo + RMF (open-rmf) + Nav2, con rosbridge para la HMI web.
+Simulación en Gazebo + RMF (open-rmf) + Nav2. El LLM entra por el MCP (`indra_agv_mcp`) y el api-server de RMF; rosbridge ya no se lanza (2026-11-12).
 
 ## Paquetes que SÍ son del proyecto (hacerles seguimiento)
 
@@ -46,7 +46,7 @@ en runtime; tratarlos como solo lectura.
 ## Qué se ejecuta de verdad
 
 Detalle de dependencias directas, procesos de `run.yml` e inconsistencias: `indra/CLAUDE.md`.
-Resumen: Gazebo Harmonic (`ros_gz_sim`/`ros_gz_bridge`) + `bcr_bot` (Nav2) + `rosbridge_server` +
+Resumen: Gazebo Harmonic (`ros_gz_sim`/`ros_gz_bridge`) + `bcr_bot` (Nav2) +
 `ObjectManager.py` + teleop del actor. La pila RMF (`rmf_*`, `rmf-web`) solo entra por `factory_rmf.launch.py`, que no está en `run.yml`: para eso está `run_rmf.yml` (tmuxinator `indra_rmf`).
 El LLM vive FUERA de este workspace: `/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs` (GCS con chat LLM,
 repo `alvcaballero/multiuav_gui`, mantenido por el usuario) y se conecta por rosbridge. Ver `indra/CLAUDE.md › LLM`.
