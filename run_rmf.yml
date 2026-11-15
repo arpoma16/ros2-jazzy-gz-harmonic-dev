@@ -34,7 +34,9 @@ windows:
             - echo "Waiting for Gazebo and the spawn bridge..."
             - sleep 25
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
-            - ros2 run indra ObjectManager.py
+            # LiftObjectManager replaces ObjectManager.py (never both: double boxes). The object
+            # appears on lift_up in a recogida_*, travels with the robot, vanishes on lift_down in an entrega_*.
+            - ros2 run indra LiftObjectManager.py
         - shell:
             - devcontainerhere
             - unset HISTFILE
