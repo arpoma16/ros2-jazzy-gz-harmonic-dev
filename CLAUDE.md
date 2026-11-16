@@ -19,6 +19,8 @@ Simulación en Gazebo + RMF (open-rmf) + Nav2. El LLM entra por el MCP (`indra_a
 | `ariac_ap/` | `arpoma16/ARIAC` (rama `ariac2025`) | Workspace/mundo base ARIAC (`ariac_gz`, `/ariac_ws`) |
 | `hmi_agv/` | sin git (hay `hmi_agv.tar.xz`) | HMI Qt (C++). Candidato a repo propio |
 | `indra_fleet_adapter/` | `arpoma16/indra_fleet_adapter` (privado, rama `main`) | Fleet adapter + fleet manager Open-RMF ↔ Nav2 de `bcr_bot`. Ver su `README.md` y `docs/RMF_ADAPTER_DESIGN.md` |
+| `indra_agv_mcp/` | git propio, **sin remote** (se quitó a propósito), rama `feat/vehicle-aware-planning` | Servidor MCP (TypeScript) de los AGV: **por aquí entra el LLM**. Todo va por el api-server de RMF (y el supervisor). Ver `indra_agv_mcp/CLAUDE.md` y `docs/DECISIONES.md` |
+| `lince_manager/` | git local propio (`main`), sin remote | Plan, decisiones (`decisions/decisiones.md`), contratos (`contracts/`) y evidencia de pruebas del proyecto. **Empezar por `ESTADO.md`**; para retomar en una sesión nueva, `PROMPT_CONTINUAR.md` |
 | `rmf-web/` | `mine` = `arpoma16/rmf-web` (fork, rama `jazzy`); `origin` = `open-rmf/rmf-web` | API server + dashboard de RMF. Fork al día con upstream `jazzy` + fixes de `gateway.py`/`app.py` y config `0.0.0.0`. Actualizar con `git fetch origin && git merge origin/jazzy`; push a `mine` (no a `origin`, no mandar PRs sin pedirlo). El api-server corre con `rmf-web/.venv/bin/python` (`pipenv sync -d`, nunca `pipenv install`); Node con pnpm 12. Receta: `rmf-web/docs/indra/environment.md` |
 
 ## Paquetes de terceros / referencia / pruebas (NO hacerles seguimiento)
@@ -49,13 +51,15 @@ Detalle de dependencias directas, procesos de `run.yml` e inconsistencias: `indr
 Resumen: Gazebo Harmonic (`ros_gz_sim`/`ros_gz_bridge`) + `bcr_bot` (Nav2) +
 `ObjectManager.py` (`run.yml`) o `LiftObjectManager.py` (`run_rmf.yml`: la caja aparece al subir la plataforma y desaparece al bajarla; nunca los dos) + teleop del actor. La pila RMF (`rmf_*`, `rmf-web`) solo entra por `factory_rmf.launch.py`, que no está en `run.yml`: para eso está `run_rmf.yml` (tmuxinator `indra_rmf`).
 El LLM vive FUERA de este workspace: `/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs` (GCS con chat LLM,
-repo `alvcaballero/multiuav_gui`, mantenido por el usuario) y se conecta por rosbridge. Ver `indra/CLAUDE.md › LLM`.
+repo `alvcaballero/multiuav_gui`, mantenido por el usuario, rama `feat/eve-agent-integration`). **Cadena:** chat del GCS (perfil `agv`, `server/models/chat/agents/agv.md`, `:4000`) → MCP `indra_agv_mcp` por HTTP (`:3001`) → api-server de RMF (`:8000`) → RMF → adapter → Nav2. Sin rosbridge. Ver `indra/CLAUDE.md › LLM`.
 `hmi_agv` es otra interfaz (Qt, voz→texto con Whisper), sin LLM.
 
 ## Entorno
 
 - Se trabaja dentro del devcontainer (`.devcontainer/`, imagen `grvc/indra`).
 - Arranque completo: tmuxinator con `run.yml` (`indra_sim`). Fábrica con Open-RMF: `tmuxinator start -p run_rmf.yml` (`indra_rmf`).
+  `run_rmf.yml` lanza, además de la sim, dos panes **en el host** (el contenedor no tiene `node`): el MCP (`:3001`, con un JWT fijo calculado con la librería estándar) y el GCS (`:4000`, espera al MCP); antes de la launch cierra las tareas que quedaron sin terminar de la corrida anterior (`indra/scripts/close_stale_tasks.py`).
+  Reiniciar el api-server o el GCS es reiniciar ese tmuxinator (el MCP se recarga solo con `tsx watch`). Estado y pendientes del proyecto: `lince_manager/ESTADO.md`.
 - Workspace dentro del contenedor: `/ariac_ws` (`source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh`).
 - Build típico: `colcon build --packages-select indra bcr_bot --symlink-install`.
 - No ejecutar builds sin que el usuario lo pida.
