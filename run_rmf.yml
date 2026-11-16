@@ -9,6 +9,7 @@ on_project_exit: docker stop indra_dev_container
 # and one bcr_bot with Nav2 (namespace bcr_bot, not driven by RMF yet).
 # Dashboard: http://localhost:5173   API: http://localhost:8000/docs   (rosbridge no se lanza: el LLM entra solo por el MCP y el api-server)
 # Camera: web_video_server on http://localhost:8080 (stream?topic=/bcr_bot_N/front_camera/image_raw)
+# LLM chain (host panes): indra_agv_mcp on :3001 (token minted from the container) -> GCS chat on :4000 (profile agv).
 # No build here: build first with
 #   colcon build --packages-up-to indra bcr_bot --symlink-install --continue-on-error
 
@@ -21,6 +22,9 @@ windows:
             - unset HISTFILE
             - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/root/.gazebo/models
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            # Each run restarts RMF's clock and forgets its tasks, but the api-server keeps /rmf_api.db: whatever was
+            # underway/queued when the last run stopped is dead. Mark it killed BEFORE the api-server starts (history is kept).
+            - python3 -I /ariac_ws/src/indra/scripts/close_stale_tasks.py --apply
             - ros2 launch indra factory_rmf.launch.py paused:=false
         - video:
             - devcontainerhere
@@ -31,12 +35,36 @@ windows:
         - objects:
             - devcontainerhere
             - unset HISTFILE
-            - echo "Waiting for Gazebo and the spawn bridge..."
-            - sleep 25
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            # LiftObjectManager waits only 5 s for these services and goes on without them (no box ever appears):
+            # wait for the spawn/delete bridge of ros_gz_sim instead of guessing a sleep (3 robots take > 25 s).
+            - echo "Waiting for Gazebo and the spawn/delete bridge (/world/default/create, /remove)..."
+            - until ros2 service list 2>/dev/null | grep -qx /world/default/create && ros2 service list 2>/dev/null | grep -qx /world/default/remove; do sleep 3; done
             # LiftObjectManager replaces ObjectManager.py (never both: double boxes). The object
             # appears on lift_up in a recogida_*, travels with the robot, vanishes on lift_down in an entrega_*.
             - ros2 run indra LiftObjectManager.py
+        # The next two panes run on the HOST (no devcontainerhere): the container has no node.
+        - mcp:
+            - unset HISTFILE
+            - cd indra_agv_mcp
+            - source ~/.nvm/nvm.sh && nvm use
+            # The api-server only accepts a JWT (HS256, dev secret of rmf-web, aud=rmf_api_server, iss=stub).
+            # It has no exp/iat, so it is always the SAME string: computed here with the stdlib, no container needed.
+            - export RMF_API_TOKEN=$(python3 -c 'import base64,hmac,hashlib,json;b=lambda d:base64.urlsafe_b64encode(d).rstrip(b"=");h=b(json.dumps({"alg":"HS256","typ":"JWT"},separators=(",",":")).encode());p=b(json.dumps({"aud":"rmf_api_server","iss":"stub","preferred_username":"llm"},separators=(",",":")).encode());print((h+b"."+p+b"."+b(hmac.new(b"rmfisawesome",h+b"."+p,hashlib.sha256).digest())).decode())')
+            - export INDRA_DESTINATIONS_FILE=$(realpath ../indra/config/destinations.json)
+            # MCP over HTTP on :3001 (POST /mcp). RMF api-server is http://localhost:8000.
+            - npm run dev:http
+        - gcs:
+            - unset HISTFILE
+            - echo "Waiting for the MCP on :3001..."
+            - until curl -s -o /dev/null localhost:3001; do sleep 2; done
+            - source ~/.nvm/nvm.sh
+            # GCS (chat LLM, repo alvcaballero/multiuav_gui) lives outside this workspace; override GCS_DIR if yours is elsewhere.
+            - cd ${GCS_DIR:-/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs}
+            - nvm use
+            - cd server
+            # Chat: http://localhost:4000/chat (profile agv). Its .env needs MCP_ENABLE=true and MCP_CONFIG pointing at http://localhost:3001/mcp.
+            - npm run server
         - shell:
             - devcontainerhere
             - unset HISTFILE
