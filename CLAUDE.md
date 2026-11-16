@@ -113,6 +113,6 @@ Indra NO es independiente de ARIAC. Se apoya en él en estos puntos (verificados
 
 ## Reglas para el agente
 
-- Cambios solo en `indra/`, `bcr_bot/`, `ariac_ap/`, `hmi_agv/`, `indra_fleet_adapter/` y los archivos de entorno de la raíz.
+- Cambios solo en `indra/`, `bcr_bot/`, `ariac_ap/`, `hmi_agv/`, `indra_fleet_adapter/`, `indra_agv_mcp/`, `lince_manager/` y los archivos de entorno de la raíz.
 - Los commits de la raíz NO incluyen las carpetas con `.git` propio.
 - Antes de afirmar que un paquete es "del proyecto", verificar con `git -C <dir> remote get-url origin`.
