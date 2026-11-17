@@ -114,5 +114,8 @@ Indra NO es independiente de ARIAC. Se apoya en él en estos puntos (verificados
 ## Reglas para el agente
 
 - Cambios solo en `indra/`, `bcr_bot/`, `ariac_ap/`, `hmi_agv/`, `indra_fleet_adapter/`, `indra_agv_mcp/`, `lince_manager/`, `rmf-web/` (rama `jazzy`; push solo a `mine`, commits con `-s --no-verify`, sin `package.json`, `pnpm-lock.yaml` ni `.nvmrc`) y los archivos de entorno de la raíz.
+- **GCS (`/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs`, repo `alvcaballero/multiuav_gui`, rama `feat/eve-agent-integration`):** el usuario dio permiso (2026-11-17) para cambiar y guardar cambios en el código de la GCS
+  (empezando por `server/models/chat/agents/agv.md` y su test), con la herramienta Edit y probando con sus tests (`npm test` en `server/`). Sigue siendo un repo ajeno que mantiene el usuario: solo los cambios que pide la tarea,
+  sin crear ramas, y commits solo a petición (conventional commits, sin atribución de IA), sin push. Un cambio ahí se carga reiniciando el GCS (lo hace el usuario).
 - Los commits de la raíz NO incluyen las carpetas con `.git` propio.
 - Antes de afirmar que un paquete es "del proyecto", verificar con `git -C <dir> remote get-url origin`.
