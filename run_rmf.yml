@@ -25,7 +25,7 @@ windows:
             # Each run restarts RMF's clock and forgets its tasks, but the api-server keeps /rmf_api.db: whatever was
             # underway/queued when the last run stopped is dead. Mark it killed BEFORE the api-server starts (history is kept).
             - python3 -I /ariac_ws/src/indra/scripts/close_stale_tasks.py --apply
-            - ros2 launch indra factory_rmf.launch.py paused:=false
+            - ros2 launch indra factory_rmf.launch.py headless:=true paused:=false 2>&1 | tee /ariac_ws/src/lince_manager/fase3/activo/llm-chain-test/launch_$(date +%H%M%S).log
         - video:
             - devcontainerhere
             - unset HISTFILE
@@ -52,6 +52,9 @@ windows:
             # It has no exp/iat, so it is always the SAME string: computed here with the stdlib, no container needed.
             - export RMF_API_TOKEN=$(python3 -c 'import base64,hmac,hashlib,json;b=lambda d:base64.urlsafe_b64encode(d).rstrip(b"=");h=b(json.dumps({"alg":"HS256","typ":"JWT"},separators=(",",":")).encode());p=b(json.dumps({"aud":"rmf_api_server","iss":"stub","preferred_username":"llm"},separators=(",",":")).encode());print((h+b"."+p+b"."+b(hmac.new(b"rmfisawesome",h+b"."+p,hashlib.sha256).digest())).decode())')
             - export INDRA_DESTINATIONS_FILE=$(realpath ../indra/config/destinations.json)
+            # The robot supervisor lives in the fleet_adapter inside the container (:8093, not published):
+            # the host reaches the container by its IP on the indra_rmf_net bridge.
+            - export SUPERVISOR_URL=http://172.25.0.10:8093
             # MCP over HTTP on :3001 (POST /mcp). RMF api-server is http://localhost:8000.
             - npm run dev:http
         - gcs:
@@ -64,9 +67,15 @@ windows:
             - nvm use
             - cd server
             # Chat: http://localhost:4000/chat (profile agv). Its .env needs MCP_ENABLE=true and MCP_CONFIG pointing at http://localhost:3001/mcp.
+            # Tools that wait for a human approval (the GCS default is only the two flight tools; dotenv does not
+            # override an exported variable). The AGV ones: whatever cancels or pauses an RMF task (D12, 2026-11-18).
+            - export TOOL_APPROVAL_REQUIRED=load_mission_to_uav,start_mission,agv_interrupt_task,agv_cancel_task
             - npm run server
         - shell:
             - devcontainerhere
             - unset HISTFILE
             - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
             - echo "Dashboard http://localhost:5173 | API http://localhost:8000/docs | e.g. ros2 run rmf_demos_tasks dispatch_go_to_place -p pantry -st 0 --use_sim_time"
+            - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/ariac_ws/src/indra/worlds:/ariac_ws/src/indra/models:/ariac_ws/src/ariac_ap/ariac_gz/models:/ariac_ws/src/IFRA_ConveyorBelt/conveyorbelt_gz/models:/ariac_ws/src/bcr_bot/meshes
+            - export GZ_CONFIG_PATH=/usr/share/gz:$GZ_CONFIG_PATH
+            - gz launch /ariac_ws/src/indra/config/websocket.gzlaunch
