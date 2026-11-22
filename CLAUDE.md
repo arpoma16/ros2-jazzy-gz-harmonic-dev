@@ -50,7 +50,7 @@ en runtime; tratarlos como solo lectura.
 
 Detalle de dependencias directas, procesos de `run.yml` e inconsistencias: `indra/CLAUDE.md`.
 Resumen: Gazebo Harmonic (`ros_gz_sim`/`ros_gz_bridge`) + `bcr_bot` (Nav2) +
-`ObjectManager.py` (`run.yml`) o `LiftObjectManager.py` (`run_rmf.yml`: la caja aparece al subir la plataforma y desaparece al bajarla; nunca los dos) + teleop del actor. La pila RMF (`rmf_*`, `rmf-web`) solo entra por `factory_rmf.launch.py`, que no está en `run.yml`: para eso está `run_rmf.yml` (tmuxinator `indra_rmf`).
+`ObjectManager.py` (`run.yml`) o `LiftObjectManager.py` (`run_rmf.yml`: la caja aparece al subir la plataforma y desaparece al bajarla, y adopta las cajas sueltas del suelo del almacén; nunca los dos) + teleop del actor. La pila RMF (`rmf_*`, `rmf-web`) solo entra por `factory_rmf.launch.py`, que no está en `run.yml`: para eso está `run_rmf.yml` (tmuxinator `indra_rmf`).
 El LLM vive FUERA de este workspace: `/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs` (GCS con chat LLM,
 repo `alvcaballero/multiuav_gui`, mantenido por el usuario, rama `feat/eve-agent-integration`). **Cadena:** chat del GCS (perfil `agv`, `server/models/chat/agents/agv.md`, `:4000`) → MCP `indra_agv_mcp` por HTTP (`:3001`) → api-server de RMF (`:8000`) → RMF → adapter → Nav2. Sin rosbridge. Ver `indra/CLAUDE.md › LLM`.
 `hmi_agv` es otra interfaz (Qt, voz→texto con Whisper), sin LLM.
