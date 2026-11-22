@@ -1,0 +1,64 @@
+name: indra_mapping
+root: .
+on_project_start: devcontainerup || devcontainer up --workspace-folder .
+on_project_exit: docker stop indra_dev_container
+
+# Mapping of the factory with the bcr_bot, driven by hand, with the RMF doors usable from the dashboard.
+#   - factory: factory_rmf.launch.py WITHOUT robots (bcr_bot_fleet:=false tinyrobot_fleet:=false spawn nothing):
+#     Gazebo (factory_rmf.sdf), RMF core + door supervisor, api-server (:8000) and dashboard (:5173).
+#   - robot:   one bcr_bot WITHOUT namespace (/bcr_bot/scan, global /tf), no Nav2, ground-truth odometry
+#     (odom == world frame, so the map frame keeps the origin of factory_map_2 / the RMF map).
+#   - slam:    slam_toolbox online async with bcr_bot/config/mapper_params_factory.yaml.
+#   - teleop:  keyboard teleop on /bcr_bot/cmd_vel (this pane must have the focus to drive).
+#   - rviz:    bcr_bot/rviz/map.rviz.
+# Open the doors from the dashboard (http://localhost:5173) BEFORE driving through them; close them afterwards.
+# Save the map (see the `shell` pane) into a NEW file: factory_map_2 is the one Nav2 and RMF use.
+# No build here: build first only if needed (colcon build --packages-select indra bcr_bot --symlink-install).
+
+windows:
+  - mapping:
+      layout: tiled
+      panes:
+        - factory:
+            - devcontainerhere
+            - unset HISTFILE
+            - export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/root/.gazebo/models
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            # Same reason as run_rmf.yml: the api-server keeps /rmf_api.db between runs.
+            - python3 -I /ariac_ws/src/indra/scripts/close_stale_tasks.py --apply
+            - ros2 launch indra factory_rmf.launch.py bcr_bot_fleet:=false tinyrobot_fleet:=false actors:=false headless:=false paused:=false
+        - robot:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - echo "Waiting for Gazebo and its spawn bridge (/world/default/create)..."
+            - until ros2 service list 2>/dev/null | grep -qx /world/default/create; do sleep 3; done
+            # Spawn pose = bcr_bot_1 of config/mobile_robot.yaml (free spot of the factory). Move it with position_x/y/yaw.
+            - ros2 launch bcr_bot bcr_bot_gz_spawn.launch.py position_x:=1.33 position_y:=-38.88 orientation_yaw:=-1.5707963267948966 odometry_source:=world launch_nav2:=False camera_enabled:=False
+        - slam:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - echo "Waiting for the robot scan (/bcr_bot/scan)..."
+            - until ros2 topic list 2>/dev/null | grep -qx /bcr_bot/scan; do sleep 3; done
+            - ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true slam_params_file:=/ariac_ws/src/bcr_bot/config/mapper_params_factory.yaml
+        - teleop:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - echo "Waiting for the robot (/bcr_bot/cmd_vel)..."
+            - until ros2 topic list 2>/dev/null | grep -qx /bcr_bot/cmd_vel; do sleep 3; done
+            - ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/bcr_bot/cmd_vel
+        - rviz:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - until ros2 topic list 2>/dev/null | grep -qx /bcr_bot/scan; do sleep 3; done
+            - rviz2 -d /ariac_ws/src/bcr_bot/rviz/map.rviz --ros-args -p use_sim_time:=true
+        - shell:
+            - devcontainerhere
+            - unset HISTFILE
+            - source /opt/ros/jazzy/setup.zsh && source /ariac_ws/install/setup.zsh
+            - echo "Dashboard http://localhost:5173 | API http://localhost:8000/docs"
+            # Not run automatically: pick the name when the map is done (the .yaml and .pgm land in bcr_bot/config).
+            - echo "To save the map run  ros2 run nav2_map_server map_saver_cli -f /ariac_ws/src/bcr_bot/config/factory_map_3 --ros-args -p use_sim_time:=true"
