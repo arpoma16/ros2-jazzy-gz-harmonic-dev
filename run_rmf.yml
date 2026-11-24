@@ -25,7 +25,7 @@ windows:
             # Each run restarts RMF's clock and forgets its tasks, but the api-server keeps /rmf_api.db: whatever was
             # underway/queued when the last run stopped is dead. Mark it killed BEFORE the api-server starts (history is kept).
             - python3 -I /ariac_ws/src/indra/scripts/close_stale_tasks.py --apply
-            - ros2 launch indra factory_rmf.launch.py headless:=true paused:=false 2>&1 | tee /ariac_ws/src/lince_manager/fase3/activo/llm-chain-test/launch_$(date +%H%M%S).log
+            - ros2 launch indra factory_rmf.launch.py actors:=true headless:=false paused:=false nav2_map:=/ariac_ws/src/bcr_bot/config/factory_occupancy.L1.yaml 2>&1 | tee /ariac_ws/src/lince_manager/fase3/activo/llm-chain-test/launch_$(date +%H%M%S).log
         - video:
             - devcontainerhere
             - unset HISTFILE
