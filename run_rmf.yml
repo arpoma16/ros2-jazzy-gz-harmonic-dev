@@ -25,7 +25,7 @@ windows:
             # Each run restarts RMF's clock and forgets its tasks, but the api-server keeps /rmf_api.db: whatever was
             # underway/queued when the last run stopped is dead. Mark it killed BEFORE the api-server starts (history is kept).
             - python3 -I /ariac_ws/src/indra/scripts/close_stale_tasks.py --apply
-            - ros2 launch indra factory_rmf.launch.py actors:=true headless:=false paused:=false nav2_map:=/ariac_ws/src/bcr_bot/config/factory_occupancy.L1.yaml 2>&1 | tee /ariac_ws/src/lince_manager/fase3/activo/llm-chain-test/launch_$(date +%H%M%S).log
+            - ros2 launch indra factory_rmf.launch.py actors:=true headless:=false paused:=false nav2_map:=/ariac_ws/src/bcr_bot/config/factory_occupancy.L1.yaml 2>&1 | tee /tmp/launch_$(date +%H%M%S).log
         - video:
             - devcontainerhere
             - unset HISTFILE
@@ -62,8 +62,8 @@ windows:
             - echo "Waiting for the MCP on :3001..."
             - until curl -s -o /dev/null localhost:3001; do sleep 2; done
             - source ~/.nvm/nvm.sh
-            # GCS (chat LLM, repo alvcaballero/multiuav_gui) lives outside this workspace; override GCS_DIR if yours is elsewhere.
-            - cd ${GCS_DIR:-/home/grvc/work/px4/llm_planner_gcs/multiuav_gcs}
+            # Chat LLM: llm_harness/ (chat-only extraction of the multiuav GCS) lives in this workspace; override GCS_DIR to point elsewhere.
+            - cd ${GCS_DIR:-/home/grvc/work/Indra/llm_harness}
             - nvm use
             - cd server
             # Chat: http://localhost:4000/chat (profile agv). Its .env needs MCP_ENABLE=true and MCP_CONFIG pointing at http://localhost:3001/mcp.
