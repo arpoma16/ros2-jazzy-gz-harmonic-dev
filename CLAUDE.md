@@ -30,8 +30,7 @@ Simulación en Gazebo + RMF (open-rmf) + Nav2. El LLM entra por el MCP (`indra_a
 Son clones de repos ajenos, usados para probar o como base de ideas futuras.
 No modificar ni commitear nada ahí; no gastar tiempo revisándolos salvo que se pida.
 
-- RMF: `rmf_demos` (dependencia real de `indra`: fleet adapter y config de TinyRobot; el mapa `factory` ya vive en `indra/maps/factory/`), `rmf_site`,
-  `rmf_site_ros2`, `rmf_site_map_server`
+- RMF: `rmf_demos` (dependencia real de `indra`: fleet adapter y config de TinyRobot; el mapa `factory` ya vive en `indra/maps/factory/`), `rmf_site_ros2`, `rmf_site_map_server`
 - Robots/manipuladores: `turtlebot3`, `husarion/`, `open_manipulator_x`,
   `dynamixel_hardware_interface`, `spot_gazebo_ros2`, `box_bot`
 - Otros: `IFRA_ConveyorBelt`, `IFRA_ObjectPose`, `ros2_SimRealRobotControl`, `roboticsInfrastructure`,
