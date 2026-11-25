@@ -46,12 +46,12 @@ windows:
         # The next two panes run on the HOST (no devcontainerhere): the container has no node.
         - mcp:
             - unset HISTFILE
-            - cd indra_agv_mcp
+            - cd indra_llm/indra_agv_mcp
             - source ~/.nvm/nvm.sh && nvm use
             # The api-server only accepts a JWT (HS256, dev secret of rmf-web, aud=rmf_api_server, iss=stub).
             # It has no exp/iat, so it is always the SAME string: computed here with the stdlib, no container needed.
             - export RMF_API_TOKEN=$(python3 -c 'import base64,hmac,hashlib,json;b=lambda d:base64.urlsafe_b64encode(d).rstrip(b"=");h=b(json.dumps({"alg":"HS256","typ":"JWT"},separators=(",",":")).encode());p=b(json.dumps({"aud":"rmf_api_server","iss":"stub","preferred_username":"llm"},separators=(",",":")).encode());print((h+b"."+p+b"."+b(hmac.new(b"rmfisawesome",h+b"."+p,hashlib.sha256).digest())).decode())')
-            - export INDRA_DESTINATIONS_FILE=$(realpath ../indra/config/destinations.json)
+            - export INDRA_DESTINATIONS_FILE=$(realpath ../../indra/config/destinations.json)
             # The robot supervisor lives in the fleet_adapter inside the container (:8093, not published):
             # the host reaches the container by its IP on the indra_rmf_net bridge.
             - export SUPERVISOR_URL=http://172.25.0.10:8093
@@ -62,8 +62,8 @@ windows:
             - echo "Waiting for the MCP on :3001..."
             - until curl -s -o /dev/null localhost:3001; do sleep 2; done
             - source ~/.nvm/nvm.sh
-            # Chat LLM: llm_harness/ (chat-only extraction of the multiuav GCS) lives in this workspace; override GCS_DIR to point elsewhere.
-            - cd ${GCS_DIR:-/home/grvc/work/Indra/llm_harness}
+            # Chat LLM: indra_llm/llm_harness/ (chat-only extraction of the multiuav GCS) lives in this workspace; override GCS_DIR to point elsewhere.
+            - cd ${GCS_DIR:-/home/grvc/work/Indra/indra_llm/llm_harness}
             - nvm use
             - cd server
             # Chat: http://localhost:4000/chat (profile agv). Its .env needs MCP_ENABLE=true and MCP_CONFIG pointing at http://localhost:3001/mcp.
